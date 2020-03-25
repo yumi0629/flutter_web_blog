@@ -6,16 +6,20 @@ import 'package:yumi_note/provider/article_provider.dart';
 import 'package:yumi_note/util/date_helper.dart';
 import 'package:yumi_note/util/route.dart';
 
-import 'home.dart';
-
 class ArticleListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _ArticleListState();
 }
 
-class _ArticleListState extends State<ArticleListPage> {
+class _ArticleListState extends State<ArticleListPage>
+    with AutomaticKeepAliveClientMixin {
+
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     print('_ArticleListState build()');
     return ChangeNotifierProvider<ArticleLisProvider>.value(
         value: ArticleLisProvider(),

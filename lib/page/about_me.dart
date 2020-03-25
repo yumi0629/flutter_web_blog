@@ -5,7 +5,12 @@ class AboutMePage extends StatefulWidget {
   State<StatefulWidget> createState() => _AboutMeState();
 }
 
-class _AboutMeState extends State<AboutMePage> {
+class _AboutMeState extends State<AboutMePage>
+    with AutomaticKeepAliveClientMixin {
+
+  @override
+  bool get wantKeepAlive => true;
+
   final titleStyle = TextStyle(fontSize: 18, color: Colors.pink);
   final bodyStyle =
       TextStyle(fontSize: 16, color: Color(0xCC000000), height: 2);
@@ -22,6 +27,7 @@ class _AboutMeState extends State<AboutMePage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Container(
       color: Colors.white,
       child: ListView(

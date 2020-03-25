@@ -6,6 +6,7 @@ class RouteName {
   static const String articleDetail = '/article_detail';
   static const String aboutMe = '/about_me';
   static const String myLife = '/my_life';
+  static const String githubAuthSuccess = '/github_login';
 }
 
 class ArticleNavHelper {

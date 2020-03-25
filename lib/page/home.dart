@@ -8,6 +8,7 @@ import 'package:yumi_note/util/route.dart';
 
 import 'article_list_page.dart';
 import 'about_me.dart';
+import 'github_login_dialog.dart';
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -19,7 +20,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage>
-    with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
 
   final List<Tab> _tabs = [
@@ -95,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage>
             flex: 1,
           ),
           Expanded(
-            child: Container(),
+            child: _buildSignIn(),
             flex: 2,
           ),
         ],
@@ -107,6 +108,49 @@ class _MyHomePageState extends State<MyHomePage>
           spreadRadius: 2,
         ),
       ]),
+    );
+  }
+
+  Widget _buildSignIn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            showDialog(context: context, child: AlertDialog(
+              content: GithubLoginDialog(),
+            ));
+          },
+          child: Container(
+            width: 120,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.black87,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'images/github.png',
+                  width: 16,
+                  height: 16,
+                ),
+                Container(
+                  width: 16,
+                ),
+                Text(
+                  'Login In',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -224,6 +268,7 @@ class _MyHomePageState extends State<MyHomePage>
 
   Widget _buildLogo() {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         Image.asset(
           'images/yumi_header.png',
@@ -241,9 +286,6 @@ class _MyHomePageState extends State<MyHomePage>
       ],
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class NoTransitionPageRoute extends MaterialPageRoute {
