@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences_web/shared_preferences_web.dart';
+import 'package:yumi_note/model/github_user.dart';
 import 'package:yumi_note/page/article_detail_page.dart';
 import 'package:yumi_note/page/right_page.dart';
 import 'package:yumi_note/util/route.dart';
@@ -96,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage>
             flex: 1,
           ),
           Expanded(
-            child: _buildSignIn(),
+            child: _SignInPage(),
             flex: 2,
           ),
         ],
@@ -108,49 +110,6 @@ class _MyHomePageState extends State<MyHomePage>
           spreadRadius: 2,
         ),
       ]),
-    );
-  }
-
-  Widget _buildSignIn() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            showDialog(context: context, child: AlertDialog(
-              content: GithubLoginDialog(),
-            ));
-          },
-          child: Container(
-            width: 120,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.black87,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  'images/github.png',
-                  width: 16,
-                  height: 16,
-                ),
-                Container(
-                  width: 16,
-                ),
-                Text(
-                  'Login In',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 
@@ -282,6 +241,118 @@ class _MyHomePageState extends State<MyHomePage>
           'images/yumi_logo.png',
           width: 120,
           height: 40,
+        ),
+      ],
+    );
+  }
+}
+
+class _SignInPage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _SignInState();
+}
+
+class _SignInState extends State {
+  GithubUser user;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferencesPlugin().getAll().then((value) {
+      user = value['user'];
+      if (user != null) setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (user == null) return _buildSignIn();
+    return _buildLogOut();
+  }
+
+  Widget _buildLogOut() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            SharedPreferencesPlugin()
+                .remove('user')
+                .then((value) => setState(() {}));
+          },
+          child: Container(
+            width: 120,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.pink,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.network(
+                  user.avatarUrl ?? 'images/github.png',
+                  width: 16,
+                  height: 16,
+                ),
+                Container(
+                  width: 16,
+                ),
+                Text(
+                  'Log Out',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSignIn() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        GestureDetector(
+          onTap: () {
+            showDialog(
+                context: context,
+                child: AlertDialog(
+                  content: GithubLoginDialog(),
+                ));
+          },
+          child: Container(
+            width: 120,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.black87,
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'images/github.png',
+                  width: 16,
+                  height: 16,
+                ),
+                Container(
+                  width: 16,
+                ),
+                Text(
+                  'Login In',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ],
     );

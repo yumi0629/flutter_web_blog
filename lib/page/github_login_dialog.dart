@@ -1,6 +1,9 @@
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js;
 
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:html' as html;
+
 import 'package:flutter/material.dart';
 import 'package:yumi_note/network/Api.dart';
 
@@ -81,6 +84,6 @@ class _GithubLoginState extends State<GithubLoginDialog> {
   void _loginWithGithub() {
     String url =
         '${Api.githubAuthorizeUrl}client_id=${Api.clientId}&redirect_uri=${Api.redirectUri}';
-    js.context.callMethod('open', [url]);
+    html.document.window.location.href = url;
   }
 }
