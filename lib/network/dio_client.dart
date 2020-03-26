@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:yumi_note/network/Api.dart';
+import 'package:yumi_note/network/api.dart';
 import 'package:oktoast/oktoast.dart';
 
 typedef SuccessCallback = void Function(dynamic data);
@@ -34,7 +34,7 @@ class DioClient {
     }
   }
 
-  static get<T>(String url,
+  static get(String url,
       {Map<String, dynamic> queryParameters, SuccessCallback success}) async {
     Response resp = await dio.get(url, queryParameters: queryParameters);
     _dealDefault(resp, success);

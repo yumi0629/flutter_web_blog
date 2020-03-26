@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yumi_note/model/article_list.dart';
-import 'package:yumi_note/network/Api.dart';
-import 'package:yumi_note/network/DioClient.dart';
+import 'package:yumi_note/network/api.dart';
+import 'package:yumi_note/network/dio_client.dart';
 
 class ArticleLisProvider with ChangeNotifier {
   final String targetUid = '5b96160b5188255c5b5c1bab';

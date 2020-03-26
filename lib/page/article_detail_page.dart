@@ -6,8 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'dart:html';
 import 'dart:ui' as ui;
 import 'package:yumi_note/model/article_detail.dart';
-import 'package:yumi_note/network/Api.dart';
-import 'package:yumi_note/network/DioClient.dart';
+import 'package:yumi_note/network/api.dart';
+import 'package:yumi_note/network/dio_client.dart';
 
 class ArticleDetailPage extends StatefulWidget {
   @override

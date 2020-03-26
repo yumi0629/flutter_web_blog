@@ -5,7 +5,7 @@ import 'dart:js' as js;
 import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
-import 'package:yumi_note/network/Api.dart';
+import 'package:yumi_note/network/api.dart';
 
 class GithubLoginDialog extends StatefulWidget {
   @override

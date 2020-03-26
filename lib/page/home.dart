@@ -7,6 +7,8 @@ import 'package:yumi_note/model/github_user.dart';
 import 'package:yumi_note/page/article_detail_page.dart';
 import 'package:yumi_note/page/right_page.dart';
 import 'package:yumi_note/util/route.dart';
+import 'package:yumi_note/util/user_helper.dart';
+import 'package:yumi_note/widget/no_transition_page_route.dart';
 
 import 'article_list_page.dart';
 import 'about_me.dart';
@@ -258,9 +260,13 @@ class _SignInState extends State {
   @override
   void initState() {
     super.initState();
-    SharedPreferencesPlugin().getAll().then((value) {
-      user = value['user'];
-      if (user != null) setState(() {});
+    UserHelper.readUserFromSP().then((value) {
+      if (value != null) {
+        UserHelper.getGithubUserInfo(user.accessToken).then((resp) {
+          user = resp;
+          setState(() {});
+        });
+      }
     });
   }
 
@@ -292,8 +298,8 @@ class _SignInState extends State {
               children: <Widget>[
                 Image.network(
                   user.avatarUrl ?? 'images/github.png',
-                  width: 16,
-                  height: 16,
+                  width: 22,
+                  height: 22,
                 ),
                 Container(
                   width: 16,
@@ -357,22 +363,4 @@ class _SignInState extends State {
       ],
     );
   }
-}
-
-class NoTransitionPageRoute extends MaterialPageRoute {
-  /// Builds the primary contents of the route.
-  final WidgetBuilder builder;
-
-  NoTransitionPageRoute({
-    @required this.builder,
-    RouteSettings settings,
-    bool fullscreenDialog = false,
-  }) : super(
-            builder: builder,
-            settings: settings,
-            maintainState: true,
-            fullscreenDialog: fullscreenDialog);
-
-  @override
-  Duration get transitionDuration => const Duration(milliseconds: 0);
 }

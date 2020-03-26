@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:yumi_note/model/about_me.dart';
+import 'package:yumi_note/network/api.dart';
+import 'package:yumi_note/network/dio_client.dart';
 
 class AboutMePage extends StatefulWidget {
   @override
@@ -7,6 +10,7 @@ class AboutMePage extends StatefulWidget {
 
 class _AboutMeState extends State<AboutMePage>
     with AutomaticKeepAliveClientMixin {
+  List<Introduction> introduction = List();
 
   @override
   bool get wantKeepAlive => true;
@@ -14,7 +18,6 @@ class _AboutMeState extends State<AboutMePage>
   final titleStyle = TextStyle(fontSize: 18, color: Colors.pink);
   final bodyStyle =
       TextStyle(fontSize: 16, color: Color(0xCC000000), height: 2);
-  final double blocMargin = 40.0;
   final loading = SizedBox(
     width: 150,
     height: 180,
@@ -26,112 +29,89 @@ class _AboutMeState extends State<AboutMePage>
   );
 
   @override
+  void initState() {
+    super.initState();
+    DioClient.get('${Api.aboutMe}', success: (data) {
+      (data as List).forEach((element) {
+        introduction.add(Introduction.fromJson(element));
+      });
+      setState(() {});
+    });
+  }
+
+  List<Widget> _buildContent() {
+    Widget bloc40 = Container(
+      height: 40.0,
+    );
+    Widget bloc20 = Container(
+      height: 20.0,
+    );
+    List<Widget> content = List();
+    introduction.forEach(
+      (element) {
+        content
+          ..add(
+            Row(
+              children: <Widget>[
+                Icon(
+                  Icons.bubble_chart,
+                  color: Colors.pink,
+                ),
+                Text(
+                  element.title,
+                  style: titleStyle,
+                ),
+              ],
+            ),
+          )
+          ..add(bloc20)
+          ..add(
+            Text(
+              element.content,
+              style: bodyStyle,
+            ),
+          )
+          ..add(bloc40);
+        if (element.image != null) {
+          List<Widget> images = List();
+          element.image.forEach((image) {
+            images
+              ..add(
+                Image.network(
+                  image,
+                  width: 150,
+                  height: 180,
+                  loadingBuilder: (_, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return loading;
+                  },
+                ),
+              )
+              ..add(
+                Container(
+                  width: 20,
+                ),
+              );
+          });
+          content.add(
+            Row(
+              children: images,
+            ),
+          );
+        }
+      },
+    );
+    return content;
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
       color: Colors.white,
       child: ListView(
-        padding: EdgeInsets.all(40),
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              Icon(
-                Icons.bubble_chart,
-                color: Colors.pink,
-              ),
-              Text(
-                '关于本站',
-                style: titleStyle,
-              ),
-            ],
-          ),
-          Container(
-            height: 20,
-          ),
-          Text(
-            '小破站前端部分纯Flutter搭建，\n'
-            '后端部分使用Go，\n'
-            '综合起来就是一句话，Google爸爸真香。\n'
-            '数据同步自掘金，图床用的Gitee。',
-            style: bodyStyle,
-          ),
-          Container(
-            height: blocMargin,
-          ),
-          Row(
-            children: <Widget>[
-              Icon(
-                Icons.bubble_chart,
-                color: Colors.pink,
-              ),
-              Text(
-                '关于我',
-                style: titleStyle,
-              ),
-            ],
-          ),
-          Container(
-            height: 20,
-          ),
-          Text(
-            '萌新，很萌很新。\n'
-            '没呆过什么牛逼的公司，不喜欢加班，目前国企养老。\n'
-            '无欲无求，只想早点下班回家看儿砸。\n'
-            '啊，儿砸太可爱了，哈哈哈哈哈哈哈。',
-            style: bodyStyle,
-          ),
-          Container(
-            height: blocMargin,
-          ),
-          Row(
-            children: <Widget>[
-              Icon(
-                Icons.bubble_chart,
-                color: Colors.pink,
-              ),
-              Text(
-                '联系我？',
-                style: titleStyle,
-              ),
-            ],
-          ),
-          Container(
-            height: 20,
-          ),
-          Text(
-            '男生请加左👈👈👈，女生请加右👉👉👉，谢谢',
-            style: bodyStyle,
-          ),
-          Container(
-            height: 20,
-          ),
-          Row(
-            children: <Widget>[
-              Image.network(
-                'https://gitee.com/yumi0629/ImageAsset/raw/master/yumi_note/qq_yumi.jpeg',
-                width: 150,
-                height: 180,
-                loadingBuilder: (_, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return loading;
-                },
-              ),
-              Container(
-                width: 20,
-              ),
-              Image.network(
-                'https://gitee.com/yumi0629/ImageAsset/raw/master/yumi_note/qq_yumi.jpeg',
-                width: 150,
-                height: 180,
-                loadingBuilder: (_, child, loadingProgress) {
-                  if (loadingProgress == null) return child;
-                  return loading;
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
+          padding: EdgeInsets.all(40),
+          children: (introduction.isEmpty) ? [Container()] : _buildContent()),
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yumi_note/page/github_login_success_page.dart';
 import 'package:yumi_note/util/route.dart';
-import 'network/DioClient.dart';
+import 'network/dio_client.dart';
 import 'page/home.dart';
 import 'package:oktoast/oktoast.dart';
 
