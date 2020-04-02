@@ -6,6 +6,8 @@ import 'dart:html' as html;
 
 import 'package:flutter/material.dart';
 import 'package:yumi_note/network/api.dart';
+import 'package:yumi_note/util/route.dart';
+import 'package:yumi_note/util/user_helper.dart';
 
 class GithubLoginDialog extends StatefulWidget {
   @override
@@ -84,6 +86,7 @@ class _GithubLoginState extends State<GithubLoginDialog> {
   void _loginWithGithub() {
     String url =
         '${Api.githubAuthorizeUrl}client_id=${Api.clientId}&redirect_uri=${Api.redirectUri}';
+    debugPrint('url = $url');
     html.document.window.location.href = url;
   }
 }

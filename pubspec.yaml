@@ -31,6 +31,7 @@ dependencies:
   extended_list: ^0.1.4
   loading_more_list: ^1.0.5
   intl: ^0.16.1
+  shared_preferences: ^0.5.6+3
   shared_preferences_web: ^0.1.2+4
   flare_flutter: ^2.0.1
 
@@ -38,7 +39,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   # flutter packages pub run build_runner build
+  # flutter run -d chrome --web-port 8686
   build_runner: ^1.8.0
+  build_web_compilers: ^2.5.6
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

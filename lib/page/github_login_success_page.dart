@@ -18,6 +18,8 @@ class GithubLoginSuccessPage extends StatefulWidget {
 class _GithubLoginSuccessState extends State<GithubLoginSuccessPage> {
   String code;
 
+  int authSuccess = 0;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -26,8 +28,24 @@ class _GithubLoginSuccessState extends State<GithubLoginSuccessPage> {
     _getUserInfo();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _default() {
+    return Material(
+      color: Colors.white,
+      child: Container(
+        alignment: Alignment.center,
+        child: SizedBox(
+          width: 80,
+          height: 40,
+          child: FlareActor(
+            "assets/loader.flr",
+            animation: 'main',
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _authSuccess() {
     return Material(
       color: Colors.white,
       child: Container(
@@ -65,17 +83,85 @@ class _GithubLoginSuccessState extends State<GithubLoginSuccessPage> {
     );
   }
 
+  Widget _authFail() {
+    return Material(
+      color: Colors.white,
+      child: Container(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Image.asset('images/login_success.png'),
+            Container(
+              height: 16,
+            ),
+            Text(
+              '授权失败\n请重试',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                height: 2,
+                color: Colors.black54,
+                fontSize: 25,
+              ),
+            ),
+            Container(
+              height: 20,
+            ),
+            SizedBox(
+              width: 80,
+              height: 40,
+              child: FlareActor(
+                "assets/loader.flr",
+                animation: 'main',
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return authSuccess == 0
+        ? _default()
+        : authSuccess == 1 ? _authSuccess() : _authFail();
+  }
+
   void _getUserInfo() {
-    String accessTokenUrl =
-        '${Api.accessTokenUrl}client_id=${Api.clientId}&client_secret=${Api.clientSecret}&code=$code';
-    Dio().get(accessTokenUrl).then((resp) {
-      String accessToken = resp.data['access_token'];
-      UserHelper.getGithubUserInfo(accessToken).then((value) {
-        Future.delayed(Duration(seconds: 3)).then((value) {
-          Navigator.of(context).pushNamedAndRemoveUntil(RouteName.initialRoute,
-              ModalRoute.withName(RouteName.initialRoute));
-        });
+    Dio()
+      ..interceptors.add(InterceptorsWrapper(
+        onError: (e) {
+          debugPrint('Dio error with request: ${e.request.uri}');
+          debugPrint('Request data: ${e.request.data}');
+          debugPrint('Dio error: ${e.message}');
+          authSuccess = -1;
+          setState(() {});
+          _goToHome();
+          return e;
+        },
+      ))
+      ..post('${Api.baseUrl}${Api.accessTokenUrl}',
+          data: FormData.fromMap({
+            'code': code,
+          })).then((resp) {
+        String accessToken = resp.data['access_token'];
+        if (accessToken == null)
+          authSuccess = -1;
+        else
+          authSuccess = 1;
+        setState(() {});
+        UserHelper.getGithubUserInfo(accessToken);
+        _goToHome();
       });
+  }
+
+  void _goToHome() {
+    debugPrint('_goToHome');
+    Future.delayed(Duration(seconds: 3)).then((value) {
+      debugPrint('pushNamedAndRemoveUntil');
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          RouteName.initialRoute, ModalRoute.withName(RouteName.initialRoute));
     });
   }
 }

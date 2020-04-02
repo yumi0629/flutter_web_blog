@@ -6,6 +6,7 @@ import 'package:shared_preferences_web/shared_preferences_web.dart';
 import 'package:yumi_note/model/github_user.dart';
 import 'package:yumi_note/page/article_detail_page.dart';
 import 'package:yumi_note/page/right_page.dart';
+import 'package:yumi_note/util/app_info.dart';
 import 'package:yumi_note/util/route.dart';
 import 'package:yumi_note/util/user_helper.dart';
 import 'package:yumi_note/widget/no_transition_page_route.dart';
@@ -260,10 +261,12 @@ class _SignInState extends State {
   @override
   void initState() {
     super.initState();
+    debugPrint('_SignInPage initState');
     UserHelper.readUserFromSP().then((value) {
       if (value != null) {
-        UserHelper.getGithubUserInfo(user.accessToken).then((resp) {
-          user = resp;
+        debugPrint('value.name = ${value.name}');
+        UserHelper.getGithubUserInfo(value.accessToken).then((_) {
+          user = AppInfo.getInstance().user;
           setState(() {});
         });
       }
@@ -287,7 +290,7 @@ class _SignInState extends State {
                 .then((value) => setState(() {}));
           },
           child: Container(
-            width: 120,
+            width: 140,
             height: 40,
             decoration: BoxDecoration(
               color: Colors.pink,
@@ -297,9 +300,16 @@ class _SignInState extends State {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Image.network(
-                  user.avatarUrl ?? 'images/github.png',
-                  width: 22,
-                  height: 22,
+                  user.avatarUrl,
+                  width: 28,
+                  height: 28,
+                  errorBuilder: (_, __, ___) {
+                    return Image.asset(
+                      'images/github.png',
+                      width: 22,
+                      height: 22,
+                    );
+                  },
                 ),
                 Container(
                   width: 16,

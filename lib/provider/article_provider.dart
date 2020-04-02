@@ -2,24 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:yumi_note/model/article_list.dart';
 import 'package:yumi_note/network/api.dart';
 import 'package:yumi_note/network/dio_client.dart';
+import 'package:yumi_note/model/article_detail.dart';
 
-class ArticleLisProvider with ChangeNotifier {
-  final String targetUid = '5b96160b5188255c5b5c1bab';
-
+class ArticleListProvider with ChangeNotifier {
   List<ArticleListBean> articles = [];
 
   int total = 0;
 
   bool get shouldLoadData => total == 0 || total > articles.length;
 
-  ArticleLisProvider() {
+  ArticleListProvider() {
     getArticleList();
   }
 
   Future<void> getArticleList([String before]) async {
     if (shouldLoadData) {
       print('getArticleList start');
-      DioClient.get('${Api.articleList}$targetUid',
+      DioClient.get('${Api.articleList}${Api.targetUid}',
           queryParameters: {'before': before}, success: (data) {
         print('getArticleList success');
         ArticleListData d = ArticleListData.fromJson(data);
@@ -32,6 +31,27 @@ class ArticleLisProvider with ChangeNotifier {
   }
 }
 
-class ArticleDetailProvider{
+class ArticleDetailProvider with ChangeNotifier {
+  String content;
+  final String postId;
+  final String title;
+  final String createdAt;
+  int imageHeight = 0;
 
+  ArticleDetailProvider(
+      {@required this.postId, @required this.title, @required this.createdAt}) {
+    debugPrint('ArticleDetailProvider init');
+    if (content == null) getArticleDetail();
+  }
+
+  void getArticleDetail() {
+    DioClient.get('${Api.articleDetail}$postId', success: (data) {
+      ArticleDetail detail = ArticleDetail.fromJson(data);
+      imageHeight = detail.imageHeight;
+      if (imageHeight == 0) // 无图
+        imageHeight = 100;
+      content = detail.content;
+      notifyListeners();
+    });
+  }
 }

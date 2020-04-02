@@ -21,16 +21,16 @@ class _ArticleListState extends State<ArticleListPage>
   Widget build(BuildContext context) {
     super.build(context);
     print('_ArticleListState build()');
-    return ChangeNotifierProvider<ArticleLisProvider>.value(
-        value: ArticleLisProvider(),
+    return ChangeNotifierProvider<ArticleListProvider>.value(
+        value: ArticleListProvider(),
         child: Builder(builder: (ctx) {
           List<ArticleListBean> articles =
-              Provider.of<ArticleLisProvider>(ctx).articles;
+              Provider.of<ArticleListProvider>(ctx).articles;
           return ExtendedListView.builder(
             itemCount: articles?.length ?? 0,
             itemBuilder: (_, index) {
               if (index == articles.length - 1) {
-                Provider.of<ArticleLisProvider>(ctx)
+                Provider.of<ArticleListProvider>(ctx)
                     .getArticleList(articles.last.createdAt);
               }
               ArticleListBean article = articles[index];

@@ -14,7 +14,9 @@ class AppInfo {
     return _instance;
   }
 
+  bool isLogin() => user != null;
+
   void setUerInfo(GithubUser user) {
-    _instance.user = user;
+    this.user = user;
   }
 }

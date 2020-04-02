@@ -1,30 +1,37 @@
-import 'package:dio/dio.dart';
-import 'package:shared_preferences_web/shared_preferences_web.dart';
+import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:yumi_note/model/github_user.dart';
 import 'package:yumi_note/network/api.dart';
+import 'package:yumi_note/network/dio_client.dart';
 import 'package:yumi_note/util/app_info.dart';
+import 'dart:convert' as convert;
 
 class UserHelper {
   const UserHelper._();
 
   static Future<GithubUser> readUserFromSP() async {
-    Map<String, Object> map = await SharedPreferencesPlugin().getAll();
-    AppInfo.getInstance().setUerInfo(map['user']);
-    return map['user'];
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    String userStr = sp.get('user');
+    if (userStr != null) {
+      Map<String, dynamic> userMap = convert.jsonDecode(sp.get('user'));
+      GithubUser user = GithubUser.fromJson(userMap);
+      debugPrint('user.name = ${user.name}');
+      AppInfo.getInstance().setUerInfo(user);
+      return user;
+    }
+    return null;
   }
 
-  static Future<GithubUser> getGithubUserInfo(String accessToken) async {
-    Response resp = await Dio().get(Api.getGithubUserInfo, queryParameters: {
+  static Future<void> getGithubUserInfo(String accessToken) async {
+    await DioClient.get(Api.getGithubUserInfo, queryParameters: {
       'access_token': accessToken,
+    }, success: (resp) async {
+      GithubUser user = GithubUser.fromJson(resp);
+      AppInfo.getInstance().setUerInfo(user);
+      debugPrint('user.name = ${user.name}');
+      SharedPreferences sp = await SharedPreferences.getInstance();
+      String userStr = convert.jsonEncode(resp);
+      sp.setString('user', userStr);
     });
-    GithubUser user = GithubUser();
-    user.accessToken = resp.data['accessToken'];
-    user.login = resp.data['login'];
-    user.id = resp.data['id'];
-    user.name = resp.data['name'];
-    user.avatarUrl = resp.data['avatarUrl'];
-    AppInfo.getInstance().setUerInfo(user);
-    await SharedPreferencesPlugin().setValue('String', 'user', user);
-    return user;
   }
 }

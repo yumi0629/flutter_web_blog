@@ -17,6 +17,7 @@ class DioClient {
         debugPrint('Dio error with request: ${e.request.uri}');
         debugPrint('Request data: ${e.request.data}');
         debugPrint('Dio error: ${e.message}');
+        showToast(e.message);
         return e;
       },
     ));
@@ -37,6 +38,15 @@ class DioClient {
   static get(String url,
       {Map<String, dynamic> queryParameters, SuccessCallback success}) async {
     Response resp = await dio.get(url, queryParameters: queryParameters);
+    _dealDefault(resp, success);
+  }
+
+  static post(String url,
+      {data,
+      Map<String, dynamic> queryParameters,
+      SuccessCallback success}) async {
+    Response resp =
+        await dio.post(url, queryParameters: queryParameters, data: data);
     _dealDefault(resp, success);
   }
 }
