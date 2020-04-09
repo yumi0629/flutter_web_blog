@@ -8,7 +8,6 @@ class MyLifePage extends StatefulWidget {
 class MyLifeState extends State<MyLifePage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
   @override

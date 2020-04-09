@@ -18,7 +18,7 @@ class ArticleListProvider with ChangeNotifier {
   Future<void> getArticleList([String before]) async {
     if (shouldLoadData) {
       print('getArticleList start');
-      DioClient.get('${Api.articleList}${Api.targetUid}',
+      DioClient.get('${Api.articleList}',
           queryParameters: {'before': before}, success: (data) {
         print('getArticleList success');
         ArticleListData d = ArticleListData.fromJson(data);
@@ -32,7 +32,7 @@ class ArticleListProvider with ChangeNotifier {
 }
 
 class ArticleDetailProvider with ChangeNotifier {
-  String content;
+  String content = '';
   final String postId;
   final String title;
   final String createdAt;
@@ -41,7 +41,7 @@ class ArticleDetailProvider with ChangeNotifier {
   ArticleDetailProvider(
       {@required this.postId, @required this.title, @required this.createdAt}) {
     debugPrint('ArticleDetailProvider init');
-    if (content == null) getArticleDetail();
+    if (content == '') getArticleDetail();
   }
 
   void getArticleDetail() {

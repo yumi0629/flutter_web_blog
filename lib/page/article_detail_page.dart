@@ -1,16 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:yumi_note/model/comment.dart';
-
-// ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
-import 'dart:ui' as ui;
 import 'package:yumi_note/provider/article_provider.dart';
 import 'package:yumi_note/provider/comment_provider.dart';
 import 'package:yumi_note/util/app_info.dart';
+import 'package:markdown/markdown.dart' as md;
+
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js' as js;
+
+import 'package:yumi_note/widget/markdown/syntax_highlighter.dart';
+import 'package:yumi_note/widget/markdown/custom_mark_down.dart';
 
 class ArticleDetailPage extends StatefulWidget {
   @override
@@ -18,15 +22,9 @@ class ArticleDetailPage extends StatefulWidget {
 }
 
 class _ArticleDetailState extends State<ArticleDetailPage> {
-  final html.NodeValidator _validator = html.NodeValidatorBuilder.common()
-    ..allowElement('img', attributes: ['src'], uriPolicy: _AllowUriPolicy())
-    ..allowElement('a', attributes: ['href'], uriPolicy: _AllowUriPolicy());
-  final html.HtmlHtmlElement htmlElement = html.HtmlHtmlElement()
-    ..style.border = 'none';
-
   String postId;
-  String title;
-  String createdAt;
+  String title = '';
+  String createdAt = '';
   String timeStamp = '';
 
   final TextEditingController _controller = TextEditingController();
@@ -38,19 +36,17 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
     if (postId == null) {
       Map<String, String> arguments = ModalRoute.of(context).settings.arguments;
       postId = arguments['postId'];
+      postId = arguments['postId'];
       title = arguments['title'];
       createdAt = arguments['createdAt'];
       timeStamp = DateTime.now().toString();
-      ui.platformViewRegistry
-          .registerViewFactory(timeStamp, (int viewId) => htmlElement);
+//      ui.platformViewRegistry
+//          .registerViewFactory(timeStamp, (int viewId) => htmlElement);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print('clientHeight = ${htmlElement.clientHeight}');
-    print('scrollHeight = ${htmlElement.scrollHeight}');
-    print('offsetHeight = ${htmlElement.offsetHeight}');
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -105,6 +101,9 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
                 return _buildArticleBody(detailProvider);
               },
             ),
+            Container(
+              height: 60,
+            ),
             Row(
               children: <Widget>[
                 Container(
@@ -148,6 +147,22 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildArticleBody(ArticleDetailProvider provider) {
+    return YMMarkdown(
+      onTapLink: (href) {
+        js.context.callMethod('open', [href]);
+      },
+      extensionSet: md.ExtensionSet.gitHubWeb,
+      syntaxHighlighter: _CodeHighlighter(),
+      styleSheet: _markdownStyleSheet,
+      shrinkWrap: true,
+      selectable: false,
+      data: provider.content,
+      controller: ScrollController(),
+      physics: NeverScrollableScrollPhysics(),
     );
   }
 
@@ -251,17 +266,6 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
             ],
           );
         });
-  }
-
-  Widget _buildArticleBody(ArticleDetailProvider provider) {
-    if (provider.content != null)
-      htmlElement.setInnerHtml(provider.content, validator: _validator);
-    return SizedBox(
-      height: htmlElement.scrollHeight.toDouble() + provider.imageHeight,
-      child: HtmlElementView(
-        viewType: timeStamp,
-      ),
-    );
   }
 
   Widget _buildCommentInput(CommentAddProvider provider) {
@@ -391,9 +395,74 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
   }
 }
 
-class _AllowUriPolicy implements html.UriPolicy {
+MarkdownStyleSheet _markdownStyleSheet = MarkdownStyleSheet(
+  h1: TextStyle(
+    fontSize: 22,
+    color: Colors.black,
+    height: 1.5,
+  ),
+  h2: TextStyle(
+    fontSize: 21,
+    color: Colors.black,
+    height: 1.5,
+  ),
+  h3: TextStyle(
+    fontSize: 20,
+    color: Colors.black,
+    height: 1.5,
+  ),
+  h4: TextStyle(
+    fontSize: 19,
+    color: Colors.black,
+    height: 1.5,
+  ),
+  h5: TextStyle(
+    fontSize: 18,
+    color: Colors.black,
+    height: 1.5,
+  ),
+  h6: TextStyle(
+    fontSize: 17,
+    color: Colors.black,
+    height: 1.5,
+  ),
+  a: const TextStyle(
+      color: Colors.pinkAccent, decoration: TextDecoration.underline),
+  p: TextStyle(
+    fontSize: 16,
+    color: Colors.black87,
+    height: 1.5,
+  ),
+  blockSpacing: 12.0,
+  blockquote: TextStyle(
+    fontSize: 14,
+    color: Colors.black54,
+    height: 1.5,
+  ),
+  blockquoteDecoration: BoxDecoration(
+    color: Colors.blue.shade50,
+    borderRadius: BorderRadius.circular(2.0),
+  ),
+  codeblockDecoration: BoxDecoration(
+    color: Colors.grey.shade100,
+    borderRadius: BorderRadius.circular(2.0),
+  ),
+  codeblockPadding: const EdgeInsets.all(12.0),
+  code: TextStyle(
+      color: Colors.black87,
+      fontFamily: 'Monaco',
+      fontSize: 14,
+      backgroundColor: Colors.grey.shade100),
+);
+
+class _CodeHighlighter extends SyntaxHighlighter {
   @override
-  bool allowsUri(String uri) {
-    return true;
+  TextSpan format(String source) {
+    return TextSpan(
+      children: [
+        DartSyntaxHighlighter(SyntaxHighlighterStyle.lightThemeStyle())
+            .format(source),
+      ],
+    );
   }
 }
