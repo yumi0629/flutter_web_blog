@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:yumi_note/network/api.dart';
-import 'package:oktoast/oktoast.dart';
 
 typedef SuccessCallback = void Function(dynamic data);
 
@@ -17,7 +17,7 @@ class DioClient {
         debugPrint('Dio error with request: ${e.request.uri}');
         debugPrint('Request data: ${e.request.data}');
         debugPrint('Dio error: ${e.message}');
-        showToast(e.message);
+        EasyLoading.showError(e.message);
         return e;
       },
     ));
@@ -28,10 +28,10 @@ class DioClient {
       if (resp.data['s'] == 1) {
         success(resp.data['d']);
       } else {
-        showToast(resp.data['m'].toString());
+        EasyLoading.showError(resp.data['m'].toString());
       }
     } else {
-      showToast(resp.data);
+      EasyLoading.showError(resp.data);
     }
   }
 

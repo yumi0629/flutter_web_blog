@@ -3,7 +3,7 @@ import 'dart:html';
 import 'dart:convert' as convert;
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:yumi_note/model/comment.dart';
 import 'package:yumi_note/network/api.dart';
 import 'package:yumi_note/network/dio_client.dart';
@@ -28,8 +28,10 @@ class CommentProvider with ChangeNotifier {
       'type': type,
       "id": id,
     }, success: (data) {
-      comments = getCommentList(data);
-      notifyListeners();
+      if (data != null) {
+        comments = getCommentList(data);
+        notifyListeners();
+      }
     });
   }
 }
@@ -60,7 +62,7 @@ class CommentAddProvider with ChangeNotifier {
           'type': type,
           'comment': convert.jsonEncode(comment.toJson()),
         }), success: (data) {
-      showToast('评论成功！');
+      EasyLoading.showSuccess('评论成功！');
       clear = true;
       needRefresh = true;
       resetReply(needRefresh: false);

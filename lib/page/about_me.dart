@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:yumi_note/model/about_me.dart';
 import 'package:yumi_note/network/api.dart';
 import 'package:yumi_note/network/dio_client.dart';
+import 'package:yumi_note/widget/loading.dart';
 
 class AboutMePage extends StatefulWidget {
   @override
@@ -18,15 +19,6 @@ class _AboutMeState extends State<AboutMePage>
   final titleStyle = TextStyle(fontSize: 18, color: Colors.pink);
   final bodyStyle =
       TextStyle(fontSize: 16, color: Color(0xCC000000), height: 2);
-  final loading = SizedBox(
-    width: 150,
-    height: 180,
-    child: Center(
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation(Colors.pinkAccent),
-      ),
-    ),
-  );
 
   @override
   void initState() {
@@ -83,7 +75,7 @@ class _AboutMeState extends State<AboutMePage>
                   height: 180,
                   loadingBuilder: (_, child, loadingProgress) {
                     if (loadingProgress == null) return child;
-                    return loading;
+                    return DefaultLoading();
                   },
                 ),
               )

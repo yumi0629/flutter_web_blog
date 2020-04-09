@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
 import 'package:yumi_note/model/github_user.dart';
 import 'package:yumi_note/page/article_detail_page.dart';
+import 'package:yumi_note/page/life_detail_page.dart';
+import 'package:yumi_note/page/my_life_page.dart';
 import 'package:yumi_note/page/right_page.dart';
 import 'package:yumi_note/util/app_info.dart';
 import 'package:yumi_note/util/route.dart';
@@ -135,64 +137,6 @@ class _MyHomePageState extends State<MyHomePage>
     );
   }
 
-  Widget _buildTabViewLife() {
-    return WillPopScope(
-        child: Navigator(
-          initialRoute: RouteName.myLife,
-          onGenerateRoute: (settings) {
-            WidgetBuilder builder;
-            switch (settings.name) {
-              case RouteName.initialRoute:
-                builder = (_) => Container();
-                break;
-              case RouteName.myLife:
-                builder = (_) => Container();
-                break;
-              default:
-                throw Exception('Invalid route: ${settings.name}');
-                break;
-            }
-            return NoTransitionPageRoute(
-              builder: builder,
-              settings: settings,
-            );
-          },
-        ),
-        onWillPop: () {
-          print('WillPopScope _buildTabViewLife');
-          return Future.value(false);
-        });
-  }
-
-  Widget _buildTabViewAboutMe() {
-    return WillPopScope(
-        child: Navigator(
-          initialRoute: RouteName.aboutMe,
-          onGenerateRoute: (settings) {
-            WidgetBuilder builder;
-            switch (settings.name) {
-              case RouteName.initialRoute:
-                builder = (_) => AboutMePage();
-                break;
-              case RouteName.aboutMe:
-                builder = (_) => AboutMePage();
-                break;
-              default:
-                throw Exception('Invalid route: ${settings.name}');
-                break;
-            }
-            return NoTransitionPageRoute(
-              builder: builder,
-              settings: settings,
-            );
-          },
-        ),
-        onWillPop: () {
-          print('WillPopScope _buildTabViewAboutMe');
-          return Future.value(false);
-        });
-  }
-
   Widget _buildTabViewArticle() {
     return WillPopScope(
       child: Navigator(
@@ -226,6 +170,69 @@ class _MyHomePageState extends State<MyHomePage>
         return Future.value(false);
       },
     );
+  }
+
+  Widget _buildTabViewLife() {
+    return WillPopScope(
+        child: Navigator(
+          key: LifeNavHelper.lifeNavKey,
+          initialRoute: RouteName.myLife,
+          onGenerateRoute: (settings) {
+            WidgetBuilder builder;
+            switch (settings.name) {
+              case RouteName.initialRoute:
+                builder = (_) => MyLifePage();
+                break;
+              case RouteName.myLife:
+                builder = (_) => MyLifePage();
+                break;
+              case RouteName.lifeDetail:
+                builder = (_) => LifeDetailPage();
+                break;
+              default:
+                throw Exception('Invalid route: ${settings.name}');
+                break;
+            }
+            return NoTransitionPageRoute(
+              builder: builder,
+              settings: settings,
+            );
+          },
+        ),
+        onWillPop: () {
+          print('WillPopScope _buildTabViewLife');
+          LifeNavHelper.popUntil(ModalRoute.withName(RouteName.myLife));
+          return Future.value(false);
+        });
+  }
+
+  Widget _buildTabViewAboutMe() {
+    return WillPopScope(
+        child: Navigator(
+          initialRoute: RouteName.aboutMe,
+          onGenerateRoute: (settings) {
+            WidgetBuilder builder;
+            switch (settings.name) {
+              case RouteName.initialRoute:
+                builder = (_) => AboutMePage();
+                break;
+              case RouteName.aboutMe:
+                builder = (_) => AboutMePage();
+                break;
+              default:
+                throw Exception('Invalid route: ${settings.name}');
+                break;
+            }
+            return NoTransitionPageRoute(
+              builder: builder,
+              settings: settings,
+            );
+          },
+        ),
+        onWillPop: () {
+          print('WillPopScope _buildTabViewAboutMe');
+          return Future.value(false);
+        });
   }
 
   Widget _buildLogo() {
