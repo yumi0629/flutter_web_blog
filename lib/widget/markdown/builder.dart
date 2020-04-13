@@ -8,6 +8,8 @@ import 'package:markdown/markdown.dart' as md;
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
+import 'package:yumi_note/widget/loading.dart';
+
 typedef Widget ImageBuilder(
     Uri uri, String imageDirectory, double width, double height);
 
@@ -18,7 +20,15 @@ final ImageBuilder kDefaultImageBuilder = (
   double height,
 ) {
   if (uri.scheme == 'http' || uri.scheme == 'https') {
-    return Image.network(uri.toString(), width: width, height: height);
+    return Image.network(
+      uri.toString(),
+      width: width,
+      height: height,
+      loadingBuilder: (_, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return DefaultLoading();
+      },
+    );
   } else if (uri.scheme == 'data') {
     return _handleDataSchemeUri(uri, width, height);
   } else if (uri.scheme == "resource") {
@@ -28,7 +38,15 @@ final ImageBuilder kDefaultImageBuilder = (
         ? Uri.parse(imageDirectory + uri.toString())
         : uri;
     if (fileUri.scheme == 'http' || fileUri.scheme == 'https') {
-      return Image.network(fileUri.toString(), width: width, height: height);
+      return Image.network(
+        fileUri.toString(),
+        width: width,
+        height: height,
+        loadingBuilder: (_, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return DefaultLoading();
+        },
+      );
     } else {
       return Image.file(File.fromUri(fileUri), width: width, height: height);
     }
@@ -126,7 +144,10 @@ class YMMarkdownBuilder implements md.NodeVisitor {
     @required this.imageBuilder,
     @required this.checkboxBuilder,
     this.fitContent = false,
+    this.buildComplete,
   });
+
+  final MarkdownTapBuildComplete buildComplete;
 
   /// A delegate that controls how link and `pre` elements behave.
   final MarkdownBuilderDelegate delegate;
@@ -173,6 +194,7 @@ class YMMarkdownBuilder implements md.NodeVisitor {
     _linkHandlers.clear();
     _isInBlockquote = false;
 
+
     _blocks.add(_BlockElement(null));
 
     for (md.Node node in nodes) {
@@ -183,6 +205,7 @@ class YMMarkdownBuilder implements md.NodeVisitor {
     assert(_tables.isEmpty);
     assert(_inlines.isEmpty);
     assert(!_isInBlockquote);
+    if (buildComplete != null) buildComplete();
     return _blocks.single.children;
   }
 

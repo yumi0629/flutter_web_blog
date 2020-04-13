@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:yumi_note/model/article_list.dart';
 import 'package:yumi_note/network/api.dart';
 import 'package:yumi_note/network/dio_client.dart';
@@ -18,8 +19,8 @@ class ArticleListProvider with ChangeNotifier {
   Future<void> getArticleList([String before]) async {
     if (shouldLoadData) {
       print('getArticleList start');
-      DioClient.get('${Api.articleList}',
-          queryParameters: {'before': before}, success: (data) {
+      DioClient.get('${Api.articleList}', queryParameters: {'before': before},
+          success: (data) {
         print('getArticleList success');
         ArticleListData d = ArticleListData.fromJson(data);
         total = d.total;
@@ -45,6 +46,7 @@ class ArticleDetailProvider with ChangeNotifier {
   }
 
   void getArticleDetail() {
+    Future.delayed(Duration.zero).then((_) => EasyLoading.show(status: '加载中，请稍候'));
     DioClient.get('${Api.articleDetail}$postId', success: (data) {
       ArticleDetail detail = ArticleDetail.fromJson(data);
       imageHeight = detail.imageHeight;

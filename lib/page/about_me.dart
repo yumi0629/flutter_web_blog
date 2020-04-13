@@ -101,6 +101,7 @@ class _AboutMeState extends State<AboutMePage>
     super.build(context);
     return Container(
       color: Colors.white,
+      margin: EdgeInsets.only(top: 20),
       child: ListView(
           padding: EdgeInsets.all(40),
           children: (introduction.isEmpty) ? [Container()] : _buildContent()),

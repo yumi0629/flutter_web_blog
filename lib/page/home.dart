@@ -126,113 +126,109 @@ class _MyHomePageState extends State<MyHomePage>
   }
 
   Widget _buildTabViews() {
-    return TabBarView(
-      physics: NeverScrollableScrollPhysics(),
-      children: [
-        _buildTabViewArticle(),
-        _buildTabViewLife(),
-        _buildTabViewAboutMe(),
-      ],
-      controller: _tabController,
+    return WillPopScope(
+      onWillPop: () {
+        switch (_tabController.index) {
+          case 0: // 文章
+            ArticleNavHelper.popUntil(
+                ModalRoute.withName(RouteName.articleList));
+            break;
+          case 1: // 生活
+            LifeNavHelper.popUntil(ModalRoute.withName(RouteName.myLife));
+            break;
+        }
+        return Future.value(false);
+      },
+      child: TabBarView(
+        physics: NeverScrollableScrollPhysics(),
+        children: [
+          _buildTabViewArticle(),
+          _buildTabViewLife(),
+          _buildTabViewAboutMe(),
+        ],
+        controller: _tabController,
+      ),
     );
   }
 
   Widget _buildTabViewArticle() {
-    return WillPopScope(
-      child: Navigator(
-        key: ArticleNavHelper.articleNavKey,
-        initialRoute: RouteName.articleList,
-        onGenerateRoute: (settings) {
-          WidgetBuilder builder;
-          switch (settings.name) {
-            case RouteName.initialRoute:
-              builder = (_) => ArticleListPage();
-              break;
-            case RouteName.articleList:
-              builder = (_) => ArticleListPage();
-              break;
-            case RouteName.articleDetail:
-              builder = (_) => ArticleDetailPage();
-              break;
-            default:
-              throw Exception('Invalid route: ${settings.name}');
-              break;
-          }
-          return NoTransitionPageRoute(
-            builder: builder,
-            settings: settings,
-          );
-        },
-      ),
-      onWillPop: () {
-        print('WillPopScope _buildTabViewArticle');
-        ArticleNavHelper.popUntil(ModalRoute.withName(RouteName.articleList));
-        return Future.value(false);
+    return Navigator(
+      key: ArticleNavHelper.articleNavKey,
+      initialRoute: RouteName.articleList,
+      onGenerateRoute: (settings) {
+        WidgetBuilder builder;
+        switch (settings.name) {
+          case RouteName.initialRoute:
+            builder = (_) => ArticleListPage();
+            break;
+          case RouteName.articleList:
+            builder = (_) => ArticleListPage();
+            break;
+          case RouteName.articleDetail:
+            builder = (_) => ArticleDetailPage();
+            break;
+          default:
+            throw Exception('Invalid route: ${settings.name}');
+            break;
+        }
+        return NoTransitionPageRoute(
+          builder: builder,
+          settings: settings,
+        );
       },
     );
   }
 
   Widget _buildTabViewLife() {
-    return WillPopScope(
-        child: Navigator(
-          key: LifeNavHelper.lifeNavKey,
-          initialRoute: RouteName.myLife,
-          onGenerateRoute: (settings) {
-            WidgetBuilder builder;
-            switch (settings.name) {
-              case RouteName.initialRoute:
-                builder = (_) => MyLifePage();
-                break;
-              case RouteName.myLife:
-                builder = (_) => MyLifePage();
-                break;
-              case RouteName.lifeDetail:
-                builder = (_) => LifeDetailPage();
-                break;
-              default:
-                throw Exception('Invalid route: ${settings.name}');
-                break;
-            }
-            return NoTransitionPageRoute(
-              builder: builder,
-              settings: settings,
-            );
-          },
-        ),
-        onWillPop: () {
-          print('WillPopScope _buildTabViewLife');
-          LifeNavHelper.popUntil(ModalRoute.withName(RouteName.myLife));
-          return Future.value(false);
-        });
+    return Navigator(
+      key: LifeNavHelper.lifeNavKey,
+      initialRoute: RouteName.myLife,
+      onGenerateRoute: (settings) {
+        WidgetBuilder builder;
+        switch (settings.name) {
+          case RouteName.initialRoute:
+            builder = (_) => MyLifePage();
+            break;
+          case RouteName.myLife:
+            builder = (_) => MyLifePage();
+            break;
+          case RouteName.lifeDetail:
+            builder = (_) => LifeDetailPage();
+            break;
+          default:
+            throw Exception('Invalid route: ${settings.name}');
+            break;
+        }
+        return NoTransitionPageRoute(
+          builder: builder,
+          settings: settings,
+        );
+      },
+    );
   }
 
   Widget _buildTabViewAboutMe() {
-    return WillPopScope(
-        child: Navigator(
-          initialRoute: RouteName.aboutMe,
-          onGenerateRoute: (settings) {
-            WidgetBuilder builder;
-            switch (settings.name) {
-              case RouteName.initialRoute:
-                builder = (_) => AboutMePage();
-                break;
-              case RouteName.aboutMe:
-                builder = (_) => AboutMePage();
-                break;
-              default:
-                throw Exception('Invalid route: ${settings.name}');
-                break;
-            }
-            return NoTransitionPageRoute(
-              builder: builder,
-              settings: settings,
-            );
-          },
-        ),
-        onWillPop: () {
-          print('WillPopScope _buildTabViewAboutMe');
-          return Future.value(false);
-        });
+    return Navigator(
+      initialRoute: RouteName.aboutMe,
+      onGenerateRoute: (settings) {
+        WidgetBuilder builder;
+        switch (settings.name) {
+          case RouteName.initialRoute:
+            builder = (_) => AboutMePage();
+            break;
+          case RouteName.aboutMe:
+            builder = (_) => AboutMePage();
+            break;
+          default:
+            throw Exception('Invalid route: ${settings.name}');
+            break;
+        }
+        return NoTransitionPageRoute(
+          builder: builder,
+          settings: settings,
+        );
+      },
+    );
   }
 
   Widget _buildLogo() {

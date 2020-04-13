@@ -32,6 +32,7 @@ class YMMarkdown extends YMMarkdownWidget {
     this.controller,
     this.physics,
     this.shrinkWrap = false,
+    MarkdownTapBuildComplete buildComplete,
   }) : super(
           key: key,
           data: data,
@@ -44,6 +45,7 @@ class YMMarkdown extends YMMarkdownWidget {
           extensionSet: extensionSet,
           imageBuilder: imageBuilder,
           checkboxBuilder: checkboxBuilder,
+          buildComplete: buildComplete,
         );
 
   /// The amount of space by which to inset the children.
@@ -104,9 +106,12 @@ abstract class YMMarkdownWidget extends StatefulWidget {
     this.imageBuilder,
     this.checkboxBuilder,
     this.fitContent = false,
+    this.buildComplete,
   })  : assert(data != null),
         assert(selectable != null),
         super(key: key);
+
+  final MarkdownTapBuildComplete buildComplete;
 
   /// The Markdown to display.
   final String data;
@@ -208,6 +213,7 @@ class _YMMarkdownWidgetState extends State<YMMarkdownWidget>
       imageBuilder: widget.imageBuilder,
       checkboxBuilder: widget.checkboxBuilder,
       fitContent: widget.fitContent,
+      buildComplete: widget.buildComplete,
     );
     _children = builder.build(document.parseLines(lines));
   }

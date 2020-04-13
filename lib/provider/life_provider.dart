@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:loading_more_list/loading_more_list.dart';
 import 'package:yumi_note/model/life.dart';
 import 'package:yumi_note/network/api.dart';
@@ -73,7 +74,10 @@ class LifeDetailProvider with ChangeNotifier {
   }
 
   void getLifeDetail() {
+    Future.delayed(Duration.zero)
+        .then((_) => EasyLoading.show(status: '加载中，请稍候'));
     DioClient.get('${Api.lifeDetail}$postId', success: (data) {
+      EasyLoading.dismiss();
       life = Life.fromJson(data);
       notifyListeners();
     });

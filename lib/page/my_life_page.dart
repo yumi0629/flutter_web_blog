@@ -12,9 +12,13 @@ class MyLifePage extends StatefulWidget {
   State<StatefulWidget> createState() => MyLifeState();
 }
 
-class MyLifeState extends State<MyLifePage> {
+class MyLifeState extends State<MyLifePage> with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -22,27 +26,23 @@ class MyLifeState extends State<MyLifePage> {
         ),
       ],
       child: Consumer<LifeListProvider>(builder: (_, provider, __) {
-        return Container(
-          color: Colors.white,
-          child: LoadingMoreList(
-            ListConfig<Life>(
-              waterfallFlowDelegate: WaterfallFlowDelegate(
-                  crossAxisCount: 3, crossAxisSpacing: 16, mainAxisSpacing: 16),
-              sourceList: provider.listRepository,
-              padding: EdgeInsets.all(16),
-              indicatorBuilder: _buildIndicator,
-              itemBuilder: (ctx, life, index) {
-                debugPrint(life.content);
-                return GestureDetector(
-                  onTap: () {
-                    LifeNavHelper.pushNamed(RouteName.lifeDetail, arguments: {
-                      'postId': life.postId,
-                    });
-                  },
-                  child: _buildItem(life),
-                );
-              },
-            ),
+        return LoadingMoreList(
+          ListConfig<Life>(
+            waterfallFlowDelegate: WaterfallFlowDelegate(
+                crossAxisCount: 3, crossAxisSpacing: 16, mainAxisSpacing: 16),
+            sourceList: provider.listRepository,
+            padding: EdgeInsets.all(16),
+            indicatorBuilder: _buildIndicator,
+            itemBuilder: (ctx, life, index) {
+              return GestureDetector(
+                onTap: () {
+                  LifeNavHelper.pushNamed(RouteName.lifeDetail, arguments: {
+                    'postId': life.postId,
+                  });
+                },
+                child: _buildItem(life),
+              );
+            },
           ),
         );
       }),
@@ -50,43 +50,52 @@ class MyLifeState extends State<MyLifePage> {
   }
 
   Widget _buildItem(Life life) {
-    return Container(
-      child: Stack(
-        children: [
-          life.images.isEmpty
-              ? Image.asset('images/yumi_header.png')
-              : Image.network(
-                  life.images[0],
-                  errorBuilder: (_, __, ___) {
-                    return Image.asset('images/yumi_header.png');
-                  },
-                  loadingBuilder: (_, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return DefaultLoading();
-                  },
-                ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                child: Container(
-                  color: Colors.black12,
-                  padding: EdgeInsets.all(10),
-                  height: 50,
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    life.content,
-                    maxLines: 2,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+    return Card(
+      color: Colors.white,
+      shadowColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      ),
+      margin: EdgeInsets.all(8),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Stack(
+          children: [
+            life.images.isEmpty
+                ? Image.asset('images/yumi_header.png')
+                : Image.network(
+                    life.images[0],
+                    errorBuilder: (_, __, ___) {
+                      return Image.asset('images/yumi_header.png');
+                    },
+                    loadingBuilder: (_, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return DefaultLoading();
+                    },
+                  ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                  child: Container(
+                    color: Colors.black12,
+                    padding: EdgeInsets.all(10),
+                    height: 50,
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      life.content,
+                      maxLines: 2,
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

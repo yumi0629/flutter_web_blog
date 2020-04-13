@@ -13,7 +13,6 @@ class ArticleListPage extends StatefulWidget {
 
 class _ArticleListState extends State<ArticleListPage>
     with AutomaticKeepAliveClientMixin {
-
   @override
   bool get wantKeepAlive => true;
 
@@ -38,6 +37,9 @@ class _ArticleListState extends State<ArticleListPage>
                 child: Card(
                   margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
                   shadowColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                  ),
                   child: Padding(
                     padding: EdgeInsets.all(20.0),
                     child: Column(

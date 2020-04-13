@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:yumi_note/page/comment_module.dart';
@@ -68,9 +69,7 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
         color: Colors.white,
         child: ListView(
           children: <Widget>[
-            Container(
-              height: 20,
-            ),
+            Container(height: 20),
             Text(
               title,
               style: TextStyle(
@@ -78,18 +77,14 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
                 color: Colors.black87,
               ),
             ),
-            Container(
-              height: 20,
-            ),
+            Container(height: 20),
             Text(
               createdAt,
               style: TextStyle(
                 color: Colors.black26,
               ),
             ),
-            Container(
-              height: 20,
-            ),
+            Container(height: 20),
             Consumer<ArticleDetailProvider>(
               builder: (_, detailProvider, ___) {
                 return _buildArticleBody(detailProvider);
@@ -129,6 +124,11 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
       data: provider.content,
       controller: ScrollController(),
       physics: NeverScrollableScrollPhysics(),
+      buildComplete: () {
+        debugPrint('buildComplete');
+        if (provider.content.isNotEmpty)
+          Future.delayed(Duration.zero).then((_) => EasyLoading.dismiss());
+      },
     );
   }
 }
