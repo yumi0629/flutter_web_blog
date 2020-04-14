@@ -6,7 +6,6 @@ import 'package:yumi_note/network/api.dart';
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js;
-
 import 'package:yumi_note/util/route.dart';
 import 'package:yumi_note/util/user_helper.dart';
 

@@ -53,7 +53,7 @@ class _ArticleListState extends State<ArticleListPage>
                           height: 12,
                         ),
                         Text(
-                          DateHelper.formatTime(article.createdAt),
+                          article.createdAt.format(),
                           style: TextStyle(color: Colors.black26),
                         ),
                         Container(
@@ -86,7 +86,7 @@ class _ArticleListState extends State<ArticleListPage>
                       arguments: {
                         'postId': postId,
                         'title': article.title,
-                        'createdAt': DateHelper.formatTime(article.createdAt),
+                        'createdAt': article.createdAt.format(),
                       });
                 },
               );
