@@ -5,4 +5,9 @@ extension Format on String {
     DateTime dateTime = DateFormat('yyyy-MM-ddThh:mm:ss.zzzZ').parse(this);
     return DateFormat('yyyy-MM-dd hh:mm:ss').format(dateTime);
   }
+
+  String formatToDay() {
+    DateTime dateTime = DateFormat('yyyy-MM-ddThh:mm:ssZ').parse(this);
+    return DateFormat('yyyy-MM-dd').format(dateTime);
+  }
 }

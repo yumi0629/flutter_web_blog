@@ -1,10 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:js' as js;
+
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
+
+import 'package:yumi_note/page/github_events_page.dart';
 
 class RightPage extends StatefulWidget {
   @override
@@ -23,6 +27,7 @@ class _RightState extends State<RightPage> {
           child: ListView(
             children: <Widget>[
               _CardPage(width: constraints.maxWidth),
+              Padding(padding: EdgeInsets.all(16), child: GithubEventsPage()),
             ],
           ),
         );
