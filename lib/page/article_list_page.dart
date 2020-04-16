@@ -20,8 +20,8 @@ class _ArticleListState extends State<ArticleListPage>
   Widget build(BuildContext context) {
     super.build(context);
     print('_ArticleListState build()');
-    return ChangeNotifierProvider<ArticleListProvider>.value(
-        value: ArticleListProvider(),
+    return ChangeNotifierProvider<ArticleListProvider>(
+        create: (_) => ArticleListProvider(),
         child: Builder(builder: (ctx) {
           List<ArticleListBean> articles =
               Provider.of<ArticleListProvider>(ctx).articles;
