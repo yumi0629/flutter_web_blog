@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences_web/shared_preferences_web.dart';
@@ -12,7 +11,6 @@ import 'package:yumi_note/util/app_info.dart';
 import 'package:yumi_note/util/route.dart';
 import 'package:yumi_note/util/user_helper.dart';
 import 'package:yumi_note/widget/no_transition_page_route.dart';
-
 import 'article_list_page.dart';
 import 'about_me.dart';
 import 'github_login_dialog.dart';
@@ -42,11 +40,24 @@ class _MyHomePageState extends State<MyHomePage>
     ),
   ];
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: _tabs.length, vsync: this);
-  }
+  final List<Tab> _tabsVertical = [
+    Tab(
+      text: '文章',
+    ),
+    Tab(
+      text: '生活',
+    ),
+    Tab(
+      text: '关于我',
+    ),
+    Tab(
+      text: 'Events',
+    ),
+  ];
+
+  Size size;
+
+  bool get isVertical => size.width < size.height;
 
   @override
   void dispose() {
@@ -56,11 +67,18 @@ class _MyHomePageState extends State<MyHomePage>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("build _tabController = $_tabController");
+    size = size ?? MediaQuery.of(context).size;
+    _tabController = _tabController ??
+        (isVertical
+            ? TabController(length: _tabsVertical.length, vsync: this)
+            : TabController(length: _tabs.length, vsync: this));
+
     return Scaffold(
       body: Container(
         child: Column(
           children: <Widget>[
-            _buildTop(),
+            isVertical ? _buildTopVertical() : _buildTop(),
             Expanded(
               child: Row(
                 children: <Widget>[
@@ -74,16 +92,67 @@ class _MyHomePageState extends State<MyHomePage>
                     }),
                     flex: 2,
                   ),
-                  Flexible(
-                    child: RightPage(),
-                    flex: 1,
-                  ),
+                  isVertical
+                      ? Container(width: 0)
+                      : Flexible(
+                          child: RightPage(),
+                          flex: 1,
+                        ),
                 ],
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildTopVertical() {
+    return Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.only(left: 30, right: 30),
+      constraints: BoxConstraints(maxHeight: 70),
+      child: Row(
+        children: <Widget>[
+          _buildLogo(),
+          Expanded(
+            child: _buildTabs(),
+          ),
+          LayoutBuilder(builder: (ctx, constraints) {
+            return GestureDetector(
+              onTap: () {
+                final RenderBox button = ctx.findRenderObject();
+                final RenderBox overlay =
+                    Overlay.of(context).context.findRenderObject();
+                final RelativeRect position = RelativeRect.fromRect(
+                  Rect.fromPoints(
+                    button.localToGlobal(button.size.bottomLeft(Offset.zero),
+                        ancestor: overlay),
+                    button.localToGlobal(button.size.bottomRight(Offset.zero),
+                        ancestor: overlay),
+                  ),
+                  Offset.zero & overlay.size,
+                );
+                showMenu(
+                    context: context,
+                    position: position,
+                    items: [PopupMenuItem(child: _SignInPage())]);
+              },
+              child: Icon(
+                Icons.more_horiz,
+                color: Colors.black87,
+              ),
+            );
+          }),
+        ],
+      ),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
+          color: Color(0x1F000000),
+          blurRadius: 2,
+          spreadRadius: 2,
+        ),
+      ]),
     );
   }
 
@@ -120,12 +189,18 @@ class _MyHomePageState extends State<MyHomePage>
 
   Widget _buildTabs() {
     return TabBar(
-      tabs: _tabs,
+      tabs: isVertical ? _tabsVertical : _tabs,
       controller: _tabController,
     );
   }
 
   Widget _buildTabViews() {
+    List<Widget> widgets = [
+      _buildTabViewArticle(),
+      _buildTabViewLife(),
+      _buildTabViewAboutMe(),
+    ];
+    if (isVertical) widgets.add(RightPage());
     return WillPopScope(
       onWillPop: () {
         switch (_tabController.index) {
@@ -141,11 +216,7 @@ class _MyHomePageState extends State<MyHomePage>
       },
       child: TabBarView(
         physics: NeverScrollableScrollPhysics(),
-        children: [
-          _buildTabViewArticle(),
-          _buildTabViewLife(),
-          _buildTabViewAboutMe(),
-        ],
+        children: widgets,
         controller: _tabController,
       ),
     );
@@ -240,14 +311,18 @@ class _MyHomePageState extends State<MyHomePage>
           width: 40,
           height: 40,
         ),
-        Container(
-          width: 10,
-        ),
-        Image.asset(
-          'images/yumi_logo.png',
-          width: 120,
-          height: 40,
-        ),
+        isVertical
+            ? Container(width: 0)
+            : Container(
+                width: 10,
+              ),
+        isVertical
+            ? Container(width: 0)
+            : Image.asset(
+                'images/yumi_logo.png',
+                width: 120,
+                height: 40,
+              ),
       ],
     );
   }

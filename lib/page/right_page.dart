@@ -7,7 +7,6 @@ import 'dart:js' as js;
 
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
-
 import 'package:yumi_note/page/github_events_page.dart';
 
 class RightPage extends StatefulWidget {
@@ -140,10 +139,11 @@ class _CardState extends State<_CardPage> with TickerProviderStateMixin {
                       Container(
                         width: 10,
                       ),
-                      Text(
+                      Expanded(
+                          child: Text(
                         '984542616',
                         style: textStyle,
-                      ),
+                      )),
                     ],
                   ),
                   Container(
@@ -159,7 +159,8 @@ class _CardState extends State<_CardPage> with TickerProviderStateMixin {
                       Container(
                         width: 10,
                       ),
-                      GestureDetector(
+                      Expanded(
+                          child: GestureDetector(
                         child: MouseRegion(
                           child: Text(
                             'https://github.com/yumi0629',
@@ -173,7 +174,7 @@ class _CardState extends State<_CardPage> with TickerProviderStateMixin {
                           js.context.callMethod(
                               'open', ['https://github.com/yumi0629']);
                         },
-                      ),
+                      )),
                     ],
                   )
                 ],
