@@ -364,7 +364,7 @@ class _SignInState extends State {
         GestureDetector(
           onTap: () {
             SharedPreferencesPlugin()
-                .remove('user')
+                .remove(UserHelper.SP_USER_KEY)
                 .then((value) => setState(() {}));
           },
           child: Container(
