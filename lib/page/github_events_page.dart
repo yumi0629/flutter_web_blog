@@ -33,7 +33,7 @@ class GithubEventsPage extends StatelessWidget {
               List<GithubEvent> events =
                   Provider.of<GithubEventsProvider>(ctx).events;
               String today =
-                  DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+                  DateFormat('yyyy-MM-dd').format(DateTime.now());
               int count = events
                   .where((element) => element.createdAt.formatToDay() == today)
                   .length;
