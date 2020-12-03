@@ -23,16 +23,12 @@ class _ArticleListState extends State<ArticleListPage>
     return ChangeNotifierProvider<ArticleListProvider>(
         create: (_) => ArticleListProvider(),
         child: Builder(builder: (ctx) {
-          List<ArticleListBean> articles =
+          List<ArticleInfo> articles =
               Provider.of<ArticleListProvider>(ctx).articles;
-          return ExtendedListView.builder(
+          return ListView.builder(
             itemCount: articles?.length ?? 0,
             itemBuilder: (_, index) {
-              if (index == articles.length - 1) {
-                Provider.of<ArticleListProvider>(ctx)
-                    .getArticleList(articles.last.createdAt);
-              }
-              ArticleListBean article = articles[index];
+              ArticleInfo article = articles[index];
               return GestureDetector(
                 child: Card(
                   margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
@@ -53,14 +49,16 @@ class _ArticleListState extends State<ArticleListPage>
                           height: 12,
                         ),
                         Text(
-                          article.createdAt.format(),
+                          article.ctime.format(),
                           style: TextStyle(color: Colors.black26),
                         ),
                         Container(
                           height: 12,
                         ),
                         Text(
-                          article.content,
+                          article.briefContent,
+                          maxLines: 4,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(fontSize: 16, color: Colors.black54),
                         ),
                         Container(
@@ -78,15 +76,11 @@ class _ArticleListState extends State<ArticleListPage>
                   ),
                 ),
                 onTap: () {
-                  String originalUrl = article.originalUrl;
-                  String postId =
-                      originalUrl.substring(originalUrl.lastIndexOf('/') + 1);
-                  print('onTap postId = $postId');
                   ArticleNavHelper.pushNamed(RouteName.articleDetail,
                       arguments: {
-                        'postId': postId,
+                        'postId': article.articleId,
                         'title': article.title,
-                        'createdAt': article.createdAt.format(),
+                        'createdAt': article.ctime.format(),
                       });
                 },
               );

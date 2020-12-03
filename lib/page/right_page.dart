@@ -23,10 +23,11 @@ class _RightState extends State<RightPage> {
         return Container(
           margin: EdgeInsets.fromLTRB(0, 40, margin, 40),
           color: Colors.white,
-          child: ListView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               _CardPage(width: constraints.maxWidth),
-              Padding(padding: EdgeInsets.all(16), child: GithubEventsPage()),
+              Expanded(child: Padding(padding: EdgeInsets.all(16), child: GithubEventsPage()),),
             ],
           ),
         );
@@ -81,12 +82,12 @@ class _CardState extends State<_CardPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-      width: widget.width * 0.5,
+      width: widget.width,
       height: widget.width * 0.35,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage('images/bg_info.png'),
-          fit: BoxFit.fill,
+          fit: BoxFit.contain,
         ),
       ),
       child: LayoutBuilder(builder: (_, constraints) {

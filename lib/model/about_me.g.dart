@@ -8,7 +8,7 @@ part of 'about_me.dart';
 
 AboutMe _$AboutMeFromJson(Map<String, dynamic> json) {
   return AboutMe(
-    (json['data'] as List)
+    (json['d'] as List)
         ?.map((e) =>
             e == null ? null : Introduction.fromJson(e as Map<String, dynamic>))
         ?.toList(),
@@ -18,7 +18,7 @@ AboutMe _$AboutMeFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$AboutMeToJson(AboutMe instance) => <String, dynamic>{
-      'data': instance.data,
+      'd': instance.data,
       's': instance.s,
       'm': instance.m,
     };

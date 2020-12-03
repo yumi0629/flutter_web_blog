@@ -2,68 +2,46 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'article_list.g.dart';
 
+
 @JsonSerializable()
-class ArticleListData {
-  @JsonKey(name: 'total')
-  int total;
+class ArticleList extends Object {
 
-  @JsonKey(name: 'entrylist')
-  List<ArticleListBean> list;
+  @JsonKey(name: 'article_info')
+  List<ArticleInfo> articleInfo;
 
-  ArticleListData(
-    this.total,
-    this.list,
-  );
+  @JsonKey(name: 'count')
+  int count;
 
-  factory ArticleListData.fromJson(Map<String, dynamic> srcJson) =>
-      _$ArticleListDataFromJson(srcJson);
+  ArticleList(this.articleInfo,this.count,);
 
-  Map<String, dynamic> toJson() => _$ArticleListDataToJson(this);
+  factory ArticleList.fromJson(Map<String, dynamic> srcJson) => _$ArticleListFromJson(srcJson);
+
+  Map<String, dynamic> toJson() => _$ArticleListToJson(this);
+
 }
 
+
 @JsonSerializable()
-class ArticleListBean {
-  @JsonKey(name: 'tags')
-  List<Tag> tags;
+class ArticleInfo extends Object {
 
-  @JsonKey(name: 'buildTime')
-  double buildTime;
-
-  @JsonKey(name: 'updatedAt')
-  String updatedAt;
-
-  @JsonKey(name: 'originalUrl')
-  String originalUrl;
-
-  @JsonKey(name: 'createdAt')
-  String createdAt;
-
-  @JsonKey(name: 'content')
-  String content;
+  @JsonKey(name: 'article_id')
+  String articleId;
 
   @JsonKey(name: 'title')
   String title;
 
-  ArticleListBean(this.tags, this.buildTime, this.updatedAt, this.originalUrl,
-      this.createdAt, this.content, this.title);
+  @JsonKey(name: 'brief_content')
+  String briefContent;
 
-  factory ArticleListBean.fromJson(Map<String, dynamic> srcJson) =>
-      _$ArticleListBeanFromJson(srcJson);
+  @JsonKey(name: 'ctime')
+  String ctime;
 
-  Map<String, dynamic> toJson() => _$ArticleListBeanToJson(this);
+  ArticleInfo(this.articleId,this.title,this.briefContent,this.ctime,);
+
+  factory ArticleInfo.fromJson(Map<String, dynamic> srcJson) => _$ArticleInfoFromJson(srcJson);
+
+  Map<String, dynamic> toJson() => _$ArticleInfoToJson(this);
+
 }
 
-@JsonSerializable()
-class Tag {
-  @JsonKey(name: 'title')
-  String title;
 
-  @JsonKey(name: 'id')
-  String id;
-
-  Tag(this.title, this.id);
-
-  factory Tag.fromJson(Map<String, dynamic> srcJson) => _$TagFromJson(srcJson);
-
-  Map<String, dynamic> toJson() => _$TagToJson(this);
-}

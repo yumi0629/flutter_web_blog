@@ -6,56 +6,35 @@ part of 'article_list.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ArticleListData _$ArticleListDataFromJson(Map<String, dynamic> json) {
-  return ArticleListData(
-    json['total'] as int,
-    (json['entrylist'] as List)
-        ?.map((e) => e == null
-            ? null
-            : ArticleListBean.fromJson(e as Map<String, dynamic>))
+ArticleList _$ArticleListFromJson(Map<String, dynamic> json) {
+  return ArticleList(
+    (json['article_info'] as List)
+        ?.map((e) =>
+            e == null ? null : ArticleInfo.fromJson(e as Map<String, dynamic>))
         ?.toList(),
+    json['count'] as int,
   );
 }
 
-Map<String, dynamic> _$ArticleListDataToJson(ArticleListData instance) =>
+Map<String, dynamic> _$ArticleListToJson(ArticleList instance) =>
     <String, dynamic>{
-      'total': instance.total,
-      'entrylist': instance.list,
+      'article_info': instance.articleInfo,
+      'count': instance.count,
     };
 
-ArticleListBean _$ArticleListBeanFromJson(Map<String, dynamic> json) {
-  return ArticleListBean(
-    (json['tags'] as List)
-        ?.map((e) => e == null ? null : Tag.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
-    (json['buildTime'] as num)?.toDouble(),
-    json['updatedAt'] as String,
-    json['originalUrl'] as String,
-    json['createdAt'] as String,
-    json['content'] as String,
+ArticleInfo _$ArticleInfoFromJson(Map<String, dynamic> json) {
+  return ArticleInfo(
+    json['article_id'] as String,
     json['title'] as String,
+    json['brief_content'] as String,
+    json['ctime'] as String,
   );
 }
 
-Map<String, dynamic> _$ArticleListBeanToJson(ArticleListBean instance) =>
+Map<String, dynamic> _$ArticleInfoToJson(ArticleInfo instance) =>
     <String, dynamic>{
-      'tags': instance.tags,
-      'buildTime': instance.buildTime,
-      'updatedAt': instance.updatedAt,
-      'originalUrl': instance.originalUrl,
-      'createdAt': instance.createdAt,
-      'content': instance.content,
+      'article_id': instance.articleId,
       'title': instance.title,
-    };
-
-Tag _$TagFromJson(Map<String, dynamic> json) {
-  return Tag(
-    json['title'] as String,
-    json['id'] as String,
-  );
-}
-
-Map<String, dynamic> _$TagToJson(Tag instance) => <String, dynamic>{
-      'title': instance.title,
-      'id': instance.id,
+      'brief_content': instance.briefContent,
+      'ctime': instance.ctime,
     };

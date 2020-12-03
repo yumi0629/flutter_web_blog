@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:provider/provider.dart';
 import 'package:yumi_note/page/comment_module.dart';
@@ -13,7 +12,6 @@ import 'package:markdown/markdown.dart' as md;
 import 'dart:js' as js;
 
 import 'package:yumi_note/widget/markdown/syntax_highlighter.dart';
-import 'package:yumi_note/widget/markdown/custom_mark_down.dart';
 
 class ArticleDetailPage extends StatefulWidget {
   @override
@@ -112,8 +110,8 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
   }
 
   Widget _buildArticleBody(ArticleDetailProvider provider) {
-    return YMMarkdown(
-      onTapLink: (href) {
+    return Markdown(
+      onTapLink: (text, href, title) {
         js.context.callMethod('open', [href]);
       },
       extensionSet: md.ExtensionSet.gitHubWeb,
@@ -124,11 +122,6 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
       data: provider.content,
       controller: ScrollController(),
       physics: NeverScrollableScrollPhysics(),
-      buildComplete: () {
-        debugPrint('buildComplete');
-        if (provider.content.isNotEmpty)
-          Future.delayed(Duration.zero).then((_) => EasyLoading.dismiss());
-      },
     );
   }
 }

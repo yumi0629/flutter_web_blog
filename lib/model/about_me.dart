@@ -4,7 +4,7 @@ part 'about_me.g.dart';
 
 @JsonSerializable()
 class AboutMe extends Object {
-  @JsonKey(name: 'data')
+  @JsonKey(name: 'd')
   List<Introduction> data;
 
   @JsonKey(name: 's')

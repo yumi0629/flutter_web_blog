@@ -2,68 +2,29 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'article_detail.g.dart';
 
-@JsonSerializable()
-class ArticleDetail {
-  @JsonKey(name: 'entryViewId')
-  String entryViewId;
 
-  @JsonKey(name: 'entryId')
-  String entryId;
+@JsonSerializable()
+class ArticleDetail extends Object {
+
+  @JsonKey(name: 'article_id')
+  String articleId;
+
+  @JsonKey(name: 'title')
+  String title;
 
   @JsonKey(name: 'content')
   String content;
 
-  @JsonKey(name: 'transcodeContent')
-  String transcodeContent;
+  @JsonKey(name: 'ctime')
+  String ctime;
 
-  @JsonKey(name: 'imageCache')
-  ImageCache imageCache;
-
-  @JsonKey(name: 'auto')
-  bool auto;
-
-  @JsonKey(name: 'version')
-  int version;
-
-  @JsonKey(name: 'createdAt')
-  String createdAt;
-
-  @JsonKey(name: 'updatedAt')
-  String updatedAt;
-
-  @JsonKey(name: 'imageHeight')
+  @JsonKey(name: 'image_height')
   int imageHeight;
 
-  ArticleDetail(
-    this.entryViewId,
-    this.entryId,
-    this.content,
-    this.transcodeContent,
-    this.imageCache,
-    this.auto,
-    this.version,
-    this.createdAt,
-    this.updatedAt,
-    this.imageHeight,
-  );
+  ArticleDetail(this.articleId,this.title,this.content,this.ctime,this.imageHeight,);
 
-  factory ArticleDetail.fromJson(Map<String, dynamic> srcJson) =>
-      _$ArticleDetailFromJson(srcJson);
+  factory ArticleDetail.fromJson(Map<String, dynamic> srcJson) => _$ArticleDetailFromJson(srcJson);
 
   Map<String, dynamic> toJson() => _$ArticleDetailToJson(this);
-}
 
-@JsonSerializable()
-class ImageCache {
-  @JsonKey(name: 'imageUrlArray')
-  List<dynamic> imageUrlArray;
-
-  ImageCache(
-    this.imageUrlArray,
-  );
-
-  factory ImageCache.fromJson(Map<String, dynamic> srcJson) =>
-      _$ImageCacheFromJson(srcJson);
-
-  Map<String, dynamic> toJson() => _$ImageCacheToJson(this);
 }

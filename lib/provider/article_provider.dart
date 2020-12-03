@@ -6,7 +6,7 @@ import 'package:yumi_note/network/dio_client.dart';
 import 'package:yumi_note/model/article_detail.dart';
 
 class ArticleListProvider with ChangeNotifier {
-  List<ArticleListBean> articles = [];
+  List<ArticleInfo> articles = [];
 
   int total = 0;
 
@@ -22,10 +22,10 @@ class ArticleListProvider with ChangeNotifier {
       DioClient.get('${Api.articleList}', queryParameters: {'before': before},
           success: (data) {
         print('getArticleList success');
-        ArticleListData d = ArticleListData.fromJson(data);
-        total = d.total;
+        ArticleList d = ArticleList.fromJson(data);
+        total = d.count;
         if (total == 0) articles.clear();
-        articles.addAll(d.list);
+        articles.addAll(d.articleInfo);
         notifyListeners();
       });
     }
@@ -46,7 +46,8 @@ class ArticleDetailProvider with ChangeNotifier {
   }
 
   void getArticleDetail() {
-    Future.delayed(Duration.zero).then((_) => EasyLoading.show(status: '加载中，请稍候'));
+    Future.delayed(Duration.zero)
+        .then((_) => EasyLoading.show(status: '加载中，请稍候'));
     DioClient.get('${Api.articleDetail}$postId', success: (data) {
       ArticleDetail detail = ArticleDetail.fromJson(data);
       imageHeight = detail.imageHeight;
@@ -54,6 +55,8 @@ class ArticleDetailProvider with ChangeNotifier {
         imageHeight = 100;
       content = detail.content;
       notifyListeners();
+      if (content.isNotEmpty)
+        Future.delayed(Duration.zero).then((_) => EasyLoading.dismiss());
     });
   }
 }

@@ -28,8 +28,11 @@ class MyLifeState extends State<MyLifePage> with AutomaticKeepAliveClientMixin {
       child: Consumer<LifeListProvider>(builder: (_, provider, __) {
         return LoadingMoreList(
           ListConfig<Life>(
-            waterfallFlowDelegate: WaterfallFlowDelegate(
-                crossAxisCount: 3, crossAxisSpacing: 16, mainAxisSpacing: 16),
+            extendedListDelegate:
+                SliverWaterfallFlowDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16),
             sourceList: provider.listRepository,
             padding: EdgeInsets.all(16),
             indicatorBuilder: _buildIndicator,
