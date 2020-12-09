@@ -66,6 +66,8 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
         padding: EdgeInsets.all(40),
         color: Colors.white,
         child: ListView(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
           children: <Widget>[
             Container(height: 20),
             Text(
@@ -110,7 +112,7 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
   }
 
   Widget _buildArticleBody(ArticleDetailProvider provider) {
-    return Markdown(
+    return MarkdownBody(
       onTapLink: (text, href, title) {
         js.context.callMethod('open', [href]);
       },
@@ -120,8 +122,6 @@ class _ArticleDetailState extends State<ArticleDetailPage> {
       shrinkWrap: true,
       selectable: false,
       data: provider.content,
-      controller: ScrollController(),
-      physics: NeverScrollableScrollPhysics(),
     );
   }
 }

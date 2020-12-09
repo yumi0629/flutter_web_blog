@@ -30,13 +30,22 @@ class _MyHomePageState extends State<MyHomePage>
 
   final List<Tab> _tabs = [
     Tab(
-      text: '文章',
+//      text: '文章',
+      child: Image.asset(
+        'images/tab_article.png',
+      ),
     ),
     Tab(
-      text: '生活',
+//      text: '生活',
+      child: Image.asset(
+        'images/tab_life.png',
+      ),
     ),
     Tab(
-      text: '关于我',
+//      text: '关于我',
+      child: Image.asset(
+        'images/tab_about_me.png',
+      ),
     ),
   ];
 
@@ -191,6 +200,7 @@ class _MyHomePageState extends State<MyHomePage>
     return TabBar(
       tabs: isVertical ? _tabsVertical : _tabs,
       controller: _tabController,
+      physics: NeverScrollableScrollPhysics(),
     );
   }
 

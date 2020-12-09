@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:yumi_note/page/github_login_success_page.dart';
 import 'package:yumi_note/util/route.dart';
+import 'package:yumi_note/widget/no_transition_page_route.dart';
 import 'network/dio_client.dart';
 import 'page/home.dart';
 
